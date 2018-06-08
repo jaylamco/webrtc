@@ -47,7 +47,6 @@ class Device {
 		this._on(EVENT.SDP)
 			.then((response) => {
 				for (let i = 0, length = response.data.length; i < length; i++) {
-					console.log('真是6');
 					let data = response.data[i];
 					let remoteSdp = JSON.parse(data.data);
 
@@ -60,10 +59,9 @@ class Device {
 							break;
 						case 'offer':
 							let answer = new Answer();
-							answer.onIceCandidate()
-								.then((candidate) => {
-									_p._emit(data.from, answer.getID(), EVENT.ICE, JSON.stringify(candidate));
-								});
+							answer.onIceCandidate((candidate) => {
+								_p._emit(data.from, answer.getID(), EVENT.ICE, JSON.stringify(candidate));
+							})
 							answer.onAddStream()
 								.then((uri) => {
 									document.getElementById('video').src = uri;
@@ -118,11 +116,9 @@ class Device {
 			let _p = this;
 			let offer = new Offer();
 
-			offer.onIceCandidate()
-				.then((candidate) => {
-					_p._emit(number, offer.getID(), EVENT.ICE, JSON.stringify(candidate));
-				});
-
+			offer.onIceCandidate((candidate) => {
+				_p._emit(number, offer.getID(), EVENT.ICE, JSON.stringify(candidate));
+			})
 			offer.createOffer(stream)
 				.then((sdp) => {
 					_p._emit(number, offer.getID(), EVENT.SDP, JSON.stringify(sdp));

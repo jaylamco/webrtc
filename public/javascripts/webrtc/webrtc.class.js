@@ -50,15 +50,13 @@ class WebRTCBasic {
 	 * on ice candidate checked.
 	 * @return {[type]} [description]
 	 */
-	onIceCandidate() {
+	onIceCandidate(callback) {
 		let _p = this;
-		return new Promise((resolve, reject) => {
-			_p.peerConnection.onicecandidate = (event) => {
-				if (event.candidate) {
-					resolve(event.candidate);
-				}
+		_p.peerConnection.onicecandidate = (event) => {
+			if (event.candidate) {
+				callback(event.candidate);
 			}
-		});
+		}
 	}
 
 	setRemoteDescription(description) {
